@@ -108,7 +108,8 @@ app.get('/user/:id', isAuthenticated, (req,res) => {
 });
 
 app.post('/user', (req, res) => {
- const username = req.body.username;
+
+  const username = req.body.username;
   const password = req.body.password;
   const confirmation = req.body['confirm-password']
 
@@ -118,7 +119,7 @@ app.post('/user', (req, res) => {
   }
 
   if (password !== confirmation) {
-    
+    req.flash('error', 'Password did not match confirmation!');
     return res.redirect('/signup');
   }
 
@@ -132,7 +133,6 @@ app.post('/user', (req, res) => {
     })
     .catch((error) => {
       console.error(error);
-      req.flash('error', error.message);
       return res.sendStatus(500);
     });
 });
@@ -260,6 +260,7 @@ app.get('/login', (req, res) => {
 app.get('/signup', (req, res) => {
   res.render('signup', {message: req.flash('error') });
 });
+
 app.post('/login', passport.authenticate('local', {
   failureRedirect: '/login',
   failureFlash: true
